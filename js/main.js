@@ -1,11 +1,15 @@
 import { adsRender } from './ads-render.js';
 import { createOffersArr, createAuthorsArr, ADS_COUNT } from './mock.js';
+import { enablePage, disablePage } from './form-master.js';
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const ZOOM = 13;
 const offers = createOffersArr(ADS_COUNT);
 const authors = createAuthorsArr(ADS_COUNT);
+
+// Сначала дисейблим все формы на странице
+disablePage();
 
 // начальные координаты карты
 const startCoordinate = {
@@ -14,7 +18,9 @@ const startCoordinate = {
 };
 
 // Инициализируем Леафлет (вызываем у L метод map(), чтобы создать карту), прикручиваем ее к блоку map-canvas и задаем начальный зум
-const map = L.map('map-canvas').setView(startCoordinate, ZOOM);
+const map = L.map('map-canvas')
+  .on('load', enablePage) // в случае успешной загрузки карты, активируем формы на странице
+  .setView(startCoordinate, ZOOM);
 
 L.tileLayer(TILE_LAYER, {
   attribution: COPYRIGHT
