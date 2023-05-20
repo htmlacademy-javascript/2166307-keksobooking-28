@@ -58,7 +58,7 @@ offers.forEach((offer, index) => {
 });
 
 
-// Задаем параметры иконки двигаемой юзером при размещении нового объявления  ( 52 х 52 пикселя)
+// Задаем параметры маркера передвигаемого юзером при размещении нового объявления  ( 52 х 52 пикселя)
 const userIcon = L.icon({
   iconUrl: '../vendor/leaflet/images/main-pin.svg',
   iconSize: [52, 52],
@@ -71,6 +71,12 @@ const usermarker = L.marker(cityCenter, {
 
 usermarker.addTo(map);
 
+// Функция сброса юзерского маркера в исходное состояние
+function resetUserMarker() {
+  usermarker.setLatLng(cityCenter);
+}
+
+
 // Обработчик на перетаскивание юзер-метки. Возвращает новые координаты по окончанию перетаскивания и вставляет их в input #address
 usermarker.on('moveend', (evt) => {
   const newPoint = evt.target.getLatLng();
@@ -81,4 +87,10 @@ usermarker.on('moveend', (evt) => {
 
 
 setUserFormSubmit();
+
+export {
+  resetUserMarker,
+  cityCenter,
+  newPointInput
+};
 

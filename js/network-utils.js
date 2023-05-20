@@ -1,5 +1,5 @@
-// import { onEditorEscKeydown } from './form-master.js';
 import { isEscapeKey } from './utils.js';
+import { resetAdForm } from './form-master.js';
 
 const confirmationTemplate = document.querySelector('#success').content.querySelector('.success');
 const confirmationElement = confirmationTemplate.cloneNode(true);
@@ -28,11 +28,10 @@ function showMistake() {
 //Функция нажатия на Esc/ на кнопку ОК/ на пространство вне сообщения при появившемся подтверждении отправки
 const onConfirmationMessageEvent = (evt) => {
   const confirmationMessage = document.querySelector('.success');
-  // const successButton = confirmationMessage.querySelector('.success__button');
   if (isEscapeKey(evt) || confirmationMessage.contains(evt.target)) {
     evt.preventDefault();
     confirmationElement.remove();
-    // document.addEventListener('keydown', onEditorEscKeydown);
+    resetAdForm();
     document.removeEventListener('keydown', onConfirmationMessageEvent);
     document.removeEventListener('mouseup', onConfirmationMessageEvent);
   }
@@ -45,7 +44,6 @@ const onMistakeMessageEvent = (evt) => {
   if (isEscapeKey(evt) || mistakeMessage.contains(evt.target) || mistakeButton.contains(evt.target)) {
     evt.preventDefault();
     mistakeElement.remove();
-    // document.addEventListener('keydown', onEditorEscKeydown);
     document.removeEventListener('keydown', onMistakeMessageEvent);
     document.removeEventListener('mouseup', onMistakeMessageEvent);
   }

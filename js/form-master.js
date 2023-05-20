@@ -1,5 +1,6 @@
 import { blockSubmitButton, unblockSubmitButton, ALERT_SHOW_TIME } from './utils.js';
 import { sendData } from './network-utils.js';
+import { resetUserMarker, cityCenter, newPointInput } from './main.js';
 
 const ERROR_TEXT = 'Неправильно заполнены поля';
 const adForm = document.querySelector('.ad-form');
@@ -15,7 +16,9 @@ const avatarPreview = document.querySelector('.ad-form-header__preview').querySe
 const imagesInput = document.querySelector('#images');
 const imagesPreview = document.querySelector('.ad-form__photo-container');
 const sliderContainer = document.querySelector('.ad-form__slider');
-//const resetButton = document.querySelector('.ad-form__reset');
+const resetButton = document.querySelector('.ad-form__reset');
+const checkboxInputList = document.querySelectorAll('.features__checkbox');
+const descriptionInput = document.querySelector('#description');
 
 // Хендлер на загрузку аватара
 avatarInput.addEventListener('input', previewAvatar);
@@ -274,8 +277,40 @@ const setUserFormSubmit = (onSuccess) => {
 };
 
 
+//Функция сброса формы для размещения объявления в исходное состояние
+function resetAdForm() {
+  const imagesContainers = imagesPreview.querySelectorAll('.ad-form__photo');
+  const newImageContainer = document.createElement('div');
+  for (let i = 0; i <= imagesContainers.length - 1; i++) {
+    imagesContainers[i].parentNode.removeChild(imagesContainers[i]);
+  }
+  newImageContainer.classList.add('ad-form__photo');
+  imagesPreview.appendChild(newImageContainer);
+  avatarPreview.src = 'img/muffin-grey.svg';
+  titleInput.value = null;
+  accomodationTypeSelector.value = 'flat';
+  changeMinPrice();
+  timeinSelector.value = '12:00';
+  timeoutSelector.value = '12:00';
+  capacitySelector.value = '3';
+  roomsSelector.value = '1';
+  descriptionInput.value = null;
+  resetUserMarker();
+  newPointInput.value = `${cityCenter.lat}${', '}${cityCenter.lng}`;
+  for (let i = 0; i <= checkboxInputList.length - 1; i++) {
+    checkboxInputList[i].checked = false;
+  }
+}
+
+// Хендлер на кнопку сброса формы
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetAdForm();
+});
+
 export {
   setUserFormSubmit,
   disablePage,
-  enablePage
+  enablePage,
+  resetAdForm
 };
