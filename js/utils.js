@@ -85,6 +85,7 @@ const showAlert = (message) => {
 //Функция проверки нажатия на ESC
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+
 export {
   shuffleRange,
   getRandomInteger,
