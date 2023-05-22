@@ -76,9 +76,23 @@ const sendData = (body) => fetch(
     throw new Error(ErrorText.SEND_DATA);
   });
 
+//Функция получения данных от сервера
+const getData = () => fetch(
+  `${BASE_URL}${Route.GET_DATA}`)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error();
+    }
+    return response.json();
+  })
+  .catch(() => {
+    throw new Error(ErrorText.GET_DATA);
+  });
+
 
 export {
   sendData,
+  getData,
   onMistakeMessageEvent,
   onConfirmationMessageEvent
 };

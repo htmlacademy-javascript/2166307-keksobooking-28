@@ -224,7 +224,7 @@ startNoUiSlider();
 setSliderListener();
 
 // Функция отключения страницы: дисейблит все формы и их детей
-function disablePage() {
+function deactivateAllForms() {
   const form = document.querySelector('.ad-form');
   const filter = document.querySelector('.map__filters');
   form.classList.add('ad-form--disabled');
@@ -237,15 +237,19 @@ function disablePage() {
   }
 }
 
-// Функция включения страницы: включает все формы и их детей
-function enablePage() {
+// Функция активации формы для размещения объявлений
+function activateAdForm() {
   const form = document.querySelector('.ad-form');
-  const filter = document.querySelector('.map__filters');
   form.classList.remove('ad-form--disabled');
-  filter.classList.remove('map__filters--disabled');
   for (let j = 0; j <= form.children.length - 1; j++) {
     form.children[j].removeAttribute('disabled');
   }
+}
+
+// Функция активации фильтров
+function activateFilterForm() {
+  const filter = document.querySelector('.map__filters');
+  filter.classList.remove('map__filters--disabled');
   for (let i = 0; i <= filter.children.length - 1; i++) {
     filter.children[i].removeAttribute('disabled');
   }
@@ -310,7 +314,8 @@ resetButton.addEventListener('click', (evt) => {
 
 export {
   setUserFormSubmit,
-  disablePage,
-  enablePage,
+  deactivateAllForms,
+  activateAdForm,
+  activateFilterForm,
   resetAdForm
 };

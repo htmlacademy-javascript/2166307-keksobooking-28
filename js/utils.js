@@ -62,6 +62,7 @@ const unblockSubmitButton = () => {
   alertContainer.remove();
 };
 
+//Функция показа сообщения об ошибке загрузки данных
 const showAlert = (message) => {
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';

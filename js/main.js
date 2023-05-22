@@ -1,8 +1,9 @@
 import { adsRender } from './ads-render.js';
 import { createOffersArr, createAuthorsArr, ADS_COUNT } from './mock.js';
-import { enablePage, disablePage } from './form-master.js';
+import { activateAdForm, activateFilterForm, deactivateAllForms } from './form-master.js';
 import { setUserFormSubmit } from './form-master.js';
-// import { getData } from './network-utils.js';
+import { getData } from './network-utils.js';
+import { showAlert } from './utils.js';
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -10,9 +11,10 @@ const ZOOM = 13;
 const offers = createOffersArr(ADS_COUNT);
 const authors = createAuthorsArr(ADS_COUNT);
 const newPointInput = document.querySelector('#address');
+let advertisement = [];
 
 // Сначала дисейблим все формы на странице
-disablePage();
+deactivateAllForms();
 
 // Начальные координаты карты
 const startCoordinate = {
@@ -32,7 +34,7 @@ newPointInput.value = `${cityCenter.lat}${', '}${cityCenter.lng}`;
 
 // Инициализируем Леафлет (вызываем у L метод map(), чтобы создать карту), прикручиваем ее к блоку map-canvas и задаем начальный зум
 const map = L.map('map-canvas')
-  .on('load', enablePage) // в случае успешной загрузки карты, активируем формы на странице
+  .on('load', activateAdForm) // в случае успешной загрузки карты, активируем формы на странице
   .setView(startCoordinate, ZOOM);
 
 L.tileLayer(TILE_LAYER, {
@@ -85,6 +87,18 @@ usermarker.on('moveend', (evt) => {
   newPointInput.value = `${newPoint.lat}${', '}${newPoint.lng}`;
 });
 
+getData()
+  .then((ads) => {
+    advertisement = ads;
+    //renderThumbnails(ads);
+    activateFilterForm();
+    console.log(advertisement);
+  })
+  .catch(
+    (err) => {
+      showAlert(err.message);
+    }
+  );
 
 setUserFormSubmit();
 
