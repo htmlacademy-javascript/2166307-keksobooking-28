@@ -1,5 +1,4 @@
 import { adsRender } from './ads-render.js';
-import { createOffersArr, createAuthorsArr, ADS_COUNT } from './mock.js';
 import { activateAdForm, activateFilterForm, deactivateAllForms } from './form-master.js';
 import { setUserFormSubmit } from './form-master.js';
 import { getData } from './network-utils.js';
@@ -8,10 +7,8 @@ import { showAlert } from './utils.js';
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const ZOOM = 13;
-const offers = createOffersArr(ADS_COUNT);
-const authors = createAuthorsArr(ADS_COUNT);
+let offers = [];
 const newPointInput = document.querySelector('#address');
-let advertisement = [];
 
 // Сначала дисейблим все формы на странице
 deactivateAllForms();
@@ -31,7 +28,6 @@ const cityCenter = {
 // пишем при старте координаты центра города в Input address
 newPointInput.value = `${cityCenter.lat}${', '}${cityCenter.lng}`;
 
-
 // Инициализируем Леафлет (вызываем у L метод map(), чтобы создать карту), прикручиваем ее к блоку map-canvas и задаем начальный зум
 const map = L.map('map-canvas')
   .on('load', activateAdForm) // в случае успешной загрузки карты, активируем формы на странице
@@ -46,19 +42,6 @@ const adIcon = L.icon({
   iconUrl: '../vendor/leaflet/images/marker-icon.png',
   iconSize: [30, 40],
 });
-
-// Отрисовываем объявления в виде поинтов на карте, используя данные из массивов offers и authors
-offers.forEach((offer, index) => {
-  const lat = offer.address.lat;
-  const lng = offer.address.lng;
-  const marker = L.marker({ lat, lng }, {
-    icon: adIcon,
-  });
-  marker
-    .addTo(map)
-    .bindPopup(adsRender(offer, authors[index]));
-});
-
 
 // Задаем параметры маркера передвигаемого юзером при размещении нового объявления  ( 52 х 52 пикселя)
 const userIcon = L.icon({
@@ -78,7 +61,6 @@ function resetUserMarker() {
   usermarker.setLatLng(cityCenter);
 }
 
-
 // Обработчик на перетаскивание юзер-метки. Возвращает новые координаты по окончанию перетаскивания и вставляет их в input #address
 usermarker.on('moveend', (evt) => {
   const newPoint = evt.target.getLatLng();
@@ -87,12 +69,22 @@ usermarker.on('moveend', (evt) => {
   newPointInput.value = `${newPoint.lat}${', '}${newPoint.lng}`;
 });
 
+// Загружаем данные с сервера
 getData()
   .then((ads) => {
-    advertisement = ads;
-    //renderThumbnails(ads);
+    offers = ads;
     activateFilterForm();
-    console.log(advertisement);
+    // Отрисовываем объявления в виде поинтов на карте, используя данные из полученного массива объектов offers
+    offers.forEach((offer) => {
+      const lat = offer.location.lat;
+      const lng = offer.location.lng;
+      const marker = L.marker({ lat, lng }, {
+        icon: adIcon,
+      });
+      marker
+        .addTo(map)
+        .bindPopup(adsRender(offer.offer, offer.author.avatar));
+    });
   })
   .catch(
     (err) => {
