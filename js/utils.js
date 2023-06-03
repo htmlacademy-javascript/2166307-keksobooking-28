@@ -1,8 +1,10 @@
-const ALERT_SHOW_TIME = 5000; // в милли секундах
+import { map } from './main.js';
+import { resetFilters } from './filter-master.js';
+
 const submitButton = document.querySelector('.ad-form__submit');
 const alertContainer = document.createElement('div');
 
-// функция перетасовки случайным образом порядка элементов в заданном диапазоне при помощи алгоритма Фишера-Йетса,
+// Функция перетасовки случайным образом порядка элементов в заданном диапазоне при помощи алгоритма Фишера-Йетса,
 // возвращает перемешанный  массив
 const shuffleRange = (a, b) => {
   const foo = [];
@@ -54,15 +56,17 @@ function roundHundred(value) {
 //Функция блокировки кнопки submit после отправки
 const blockSubmitButton = () => {
   submitButton.disabled = true;
+  map.closePopup();
+  resetFilters();
 };
 
 //Функция разблокировки кнопки submit после отправки
 const unblockSubmitButton = () => {
   submitButton.disabled = false;
-  alertContainer.remove();
+  // alertContainer.remove();
 };
 
-//Функция показа сообщения об ошибке загрузки данных
+//Функция показа сообщения об ошибке
 const showAlert = (message) => {
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
@@ -77,10 +81,11 @@ const showAlert = (message) => {
   alertContainer.classList.add = 'alert__container';
   alertContainer.textContent = message;
   document.body.append(alertContainer);
-  blockSubmitButton();
-  setTimeout(() => {
-    unblockSubmitButton();
-  }, ALERT_SHOW_TIME);
+};
+
+//Функция удаления сообщения об ошибке
+const removeAlert = () => {
+  alertContainer.remove();
 };
 
 //Функция проверки нажатия на ESC
@@ -93,9 +98,9 @@ export {
   getRandomArrayElement,
   getSet,
   showAlert,
+  removeAlert,
   blockSubmitButton,
   unblockSubmitButton,
   roundHundred,
-  isEscapeKey,
-  ALERT_SHOW_TIME
+  isEscapeKey
 };

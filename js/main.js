@@ -1,12 +1,15 @@
-import { adsRender } from './ads-render.js';
+import { renderPoints } from './ads-render.js';
 import { activateAdForm, activateFilterForm, deactivateAllForms } from './form-master.js';
 import { setUserFormSubmit } from './form-master.js';
 import { getData } from './network-utils.js';
-import { showAlert } from './utils.js';
+import { showAlert, blockSubmitButton, unblockSubmitButton, removeAlert} from './utils.js';
+import { activateFilter } from './filter-master.js';
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const ZOOM = 13;
+const QTY_OF_ADS = 10;
+const ALERT_SHOW_TIME = 5000; // в милли секундах
 let offers = [];
 const newPointInput = document.querySelector('#address');
 
@@ -74,21 +77,17 @@ getData()
   .then((ads) => {
     offers = ads;
     activateFilterForm();
-    // Отрисовываем объявления в виде поинтов на карте, используя данные из полученного массива объектов offers
-    offers.forEach((offer) => {
-      const lat = offer.location.lat;
-      const lng = offer.location.lng;
-      const marker = L.marker({ lat, lng }, {
-        icon: adIcon,
-      });
-      marker
-        .addTo(map)
-        .bindPopup(adsRender(offer.offer, offer.author.avatar));
-    });
+    activateFilter();
+    renderPoints(offers);
   })
   .catch(
     (err) => {
       showAlert(err.message);
+      blockSubmitButton();
+      setTimeout(() => {
+        unblockSubmitButton();
+        removeAlert();
+      }, ALERT_SHOW_TIME);
     }
   );
 
@@ -97,6 +96,11 @@ setUserFormSubmit();
 export {
   resetUserMarker,
   cityCenter,
-  newPointInput
+  newPointInput,
+  offers,
+  adIcon,
+  map,
+  QTY_OF_ADS,
+  ALERT_SHOW_TIME
 };
 

@@ -1,3 +1,6 @@
+import { adIcon, map, QTY_OF_ADS } from './main.js';
+
+const mapMarkers = [];
 
 // Функция генерации HTML-кода для вывода фотографий жилья
 function createImgList(photos) {
@@ -11,14 +14,14 @@ function createImgList(photos) {
 // Функция генерации HTML-кода для вывода списка опций жилья
 function createFeaturesList(features) {
   let list = '';
-  for (let i = 0; i < features.length - 1; i++) {
+  for (let i = 0; i < features.length; i++) {
     list = list.concat(`${'<li class="popup__feature popup__feature--'}${features[i]}${'"></li>'}`);
   }
   return list;
 }
 
-//Функция отрисовки отдельного объявления
-function adsRender(advertisement, owner) {
+//Функция отрисовки отдельной карточки отдельного объявления
+function adRender(advertisement, owner) {
   const adTemplate = document.querySelector('#card').content.querySelector('.popup');
   const adElement = adTemplate.cloneNode(true);
   const adPhotos = adElement.querySelector('.popup__photos');
@@ -55,7 +58,7 @@ function adsRender(advertisement, owner) {
   if ('photos' in advertisement) {
     adPhotos.innerHTML = createImgList(advertisement.photos);
   } else {
-    adPhotos.setAttribute('disabled','');
+    adPhotos.setAttribute('disabled', '');
     adPhotos.removeChild(adPhotos.firstElementChild);
   }
   // добавляем disabled, если блок есть, но пустой..
@@ -63,7 +66,38 @@ function adsRender(advertisement, owner) {
   return adElement;
 }
 
+//Функция отрисовки точек на карте
+function renderPoints(list) {
+  for (let i = 0; i <= QTY_OF_ADS - 1; i++){
+    const lat = list[i].location.lat;
+    const lng = list[i].location.lng;
+    const marker = L.marker({ lat, lng }, {
+      icon: adIcon,
+    });
+    mapMarkers.push(marker); //  Add marker to this.mapMarker for future reference
+    marker
+      .addTo(map)
+      .bindPopup(adRender(list[i].offer, list[i].author.avatar));
+  }
+}
+
+//Функция удаления отрисованных точек на карте
+function deleteRenderedPoints() {
+  mapMarkers.forEach((point) => {
+    point.remove();
+  });
+}
+
+////Функция отрисовки всех карточек для всех объявлений
+function adsRender(advertisements) {
+  for (let i = 0; i < advertisements.length - 1; i++) {
+    adsRender(advertisements[i].offer, advertisements[i].author.avatar);
+  }
+}
+
 
 export {
-  adsRender
+  adsRender,
+  renderPoints,
+  deleteRenderedPoints
 };

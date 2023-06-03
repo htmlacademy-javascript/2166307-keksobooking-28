@@ -1,4 +1,4 @@
-import { isEscapeKey } from './utils.js';
+import { isEscapeKey, unblockSubmitButton } from './utils.js';
 import { resetAdForm } from './form-master.js';
 
 const confirmationTemplate = document.querySelector('#success').content.querySelector('.success');
@@ -32,6 +32,7 @@ const onConfirmationMessageEvent = (evt) => {
     evt.preventDefault();
     confirmationElement.remove();
     resetAdForm();
+    unblockSubmitButton();
     document.removeEventListener('keydown', onConfirmationMessageEvent);
     document.removeEventListener('mouseup', onConfirmationMessageEvent);
   }
