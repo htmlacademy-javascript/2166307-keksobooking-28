@@ -1,4 +1,5 @@
 import { adIcon, map, QTY_OF_ADS } from './main.js';
+import { FLAT, BUNGALOW, HOUSE, PALACE, HOTEL } from './form-master.js';
 
 const mapMarkers = [];
 
@@ -31,19 +32,19 @@ function adRender(advertisement, owner) {
   adElement.querySelector('.popup__text--address').textContent = `${advertisement.address}`;
   adElement.querySelector('.popup__text--price').textContent = `${advertisement.price}${' ₽/ночь'}`;
   switch (advertisement.type) {
-    case 'flat':
+    case FLAT:
       adType.textContent = 'Квартира';
       break;
-    case 'bungalow':
+    case BUNGALOW:
       adType.textContent = 'Бунгало';
       break;
-    case 'house':
+    case HOUSE:
       adType.textContent = 'Дом';
       break;
-    case 'palace':
+    case PALACE:
       adType.textContent = 'Дворец';
       break;
-    case 'hotel':
+    case HOTEL:
       adType.textContent = 'Отель';
       break;
   }
@@ -68,7 +69,10 @@ function adRender(advertisement, owner) {
 
 //Функция отрисовки точек на карте
 function renderPoints(list) {
-  for (let i = 0; i <= QTY_OF_ADS - 1; i++){
+  for (let i = 0; i <= QTY_OF_ADS - 1; i++) {
+    if (typeof list[i] === 'undefined') {
+      continue;
+    }
     const lat = list[i].location.lat;
     const lng = list[i].location.lng;
     const marker = L.marker({ lat, lng }, {

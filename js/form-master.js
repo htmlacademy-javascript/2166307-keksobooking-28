@@ -21,6 +21,20 @@ const resetButton = document.querySelector('.ad-form__reset');
 const checkboxInputList = document.querySelectorAll('.features__checkbox');
 const descriptionInput = document.querySelector('#description');
 
+const FLAT = 'flat';
+const BUNGALOW = 'bungalow';
+const HOUSE = 'house';
+const PALACE = 'palace';
+const HOTEL = 'hotel';
+const NOT_FOR_GUESTS = '0';
+const ONE_HUNDRED_ROOMS = '100';
+const MIN_QTY_SYMBOLS = 30;
+const MAX_QTY_SYMBOLS = 100;
+const TITLE_ALERT_MESSAGE = 'ЗАГОЛОВОК ОБЪЯВЛЕНИЯ: минимальная длина 30 символов.';
+const PRICE_ALERT_MESSAGE = 'МИНИМАЛЬНЫЕ ЦЕНЫ ЗА НОЧЬ: Бунгало - от 0 | Квартира - от 1000 | Отель - от 3000 | Дворец - от 10000 .';
+const ROOMS_ALERT_MESSAGE = 'КОЛИЧЕСТВО КОМНАТ : 1 комната - для 1 гостя | 2 комнаты - для 1/2 гостей | 3 комнаты - для 1/2/3 гостей | 100 комнат - не для гостей';
+
+
 // Хендлер на загрузку аватара
 avatarInput.addEventListener('input', previewAvatar);
 
@@ -54,7 +68,7 @@ function previewImage() {
 //Функция меняющая мин значение цены и плейсхолдер в Input Price в зависимости от типа размещения
 function changeMinPrice() {
   switch (accomodationTypeSelector.value) {
-    case 'flat':
+    case FLAT:
       priceInput.min = 1000;
       priceInput.value = 1000;
       priceInput.placeholder = 1000;
@@ -65,7 +79,7 @@ function changeMinPrice() {
       priceInput.parentNode.classList.remove('ad-form__element--invalid');
       removeAlert();
       break;
-    case 'bungalow':
+    case BUNGALOW:
       priceInput.min = 0;
       priceInput.value = 0;
       priceInput.placeholder = 0;
@@ -76,7 +90,7 @@ function changeMinPrice() {
       priceInput.parentNode.classList.remove('ad-form__element--invalid');
       removeAlert();
       break;
-    case 'house':
+    case HOUSE:
       priceInput.min = 5000;
       priceInput.value = 5000;
       priceInput.placeholder = 5000;
@@ -87,7 +101,7 @@ function changeMinPrice() {
       priceInput.parentNode.classList.remove('ad-form__element--invalid');
       removeAlert();
       break;
-    case 'palace':
+    case PALACE:
       priceInput.min = 10000;
       priceInput.value = 10000;
       priceInput.placeholder = 10000;
@@ -98,7 +112,7 @@ function changeMinPrice() {
       priceInput.parentNode.classList.remove('ad-form__element--invalid');
       removeAlert();
       break;
-    case 'hotel':
+    case HOTEL:
       priceInput.min = 3000;
       priceInput.value = 3000;
       priceInput.placeholder = 3000;
@@ -143,13 +157,13 @@ const pristine = new Pristine(adForm);
 
 //Функция валидации поля Title
 function validateTitle(field) {
-  if (field.length <= 100 && field.length >= 30) {
+  if (field.length <= MAX_QTY_SYMBOLS && field.length >= MIN_QTY_SYMBOLS) {
     titleInput.parentNode.classList.remove('ad-form__element--invalid');
     removeAlert();
     return true;
   }
   titleInput.parentNode.classList.add('ad-form__element--invalid');
-  showAlert('ЗАГОЛОВОК ОБЪЯВЛЕНИЯ: минимальная длина 30 символов');
+  showAlert(TITLE_ALERT_MESSAGE);
   return false;
 }
 
@@ -161,19 +175,19 @@ function validatePrice(field) {
     return true;
   }
   priceInput.parentNode.classList.add('ad-form__element--invalid');
-  showAlert('МИНИМАЛЬНЫЕ ЦЕНЫ ЗА НОЧЬ: Бунгало - от 0 | Квартира - от 1000 | Отель - от 3000 | Дворец - от 10000 .   ');
+  showAlert(PRICE_ALERT_MESSAGE);
   return false;
 }
 
 //Функция валидации Capacity
 function validateCapacity(field) {
-  if (roomsSelector.value === '100' && field === '0' || roomsSelector.value !== '100' && field !== '0' && Number(roomsSelector.value) >= Number(field)) {
+  if (roomsSelector.value === ONE_HUNDRED_ROOMS && field === NOT_FOR_GUESTS || roomsSelector.value !== ONE_HUNDRED_ROOMS && field !== NOT_FOR_GUESTS && Number(roomsSelector.value) >= Number(field)) {
     roomsSelector.parentNode.classList.remove('ad-form__element--invalid');
     removeAlert();
     return true;
   }
   roomsSelector.parentNode.classList.add('ad-form__element--invalid');
-  showAlert('КОЛИЧЕСТВО КОМНАТ : 1 комната - для 1 гостя | 2 комнаты - для 1/2 гостей | 3 комнаты - для 1/2/3 гостей');
+  showAlert(ROOMS_ALERT_MESSAGE);
   return false;
 }
 
@@ -292,7 +306,7 @@ const setUserFormSubmit = (onSuccess) => {
     } else {
       if (titleInput.value === '') {
         titleInput.parentNode.classList.add('ad-form__element--invalid');
-        showAlert('ЗАГОЛОВОК ОБЪЯВЛЕНИЯ: минимальная длина 30 символов');
+        showAlert(TITLE_ALERT_MESSAGE);
       }
     }
   });
@@ -309,7 +323,7 @@ function resetAdForm() {
   imagesPreview.appendChild(newImageContainer);
   avatarPreview.src = 'img/muffin-grey.svg';
   titleInput.value = null;
-  accomodationTypeSelector.value = 'flat';
+  accomodationTypeSelector.value = FLAT;
   changeMinPrice();
   timeinSelector.value = '12:00';
   timeoutSelector.value = '12:00';
@@ -337,5 +351,10 @@ export {
   deactivateAllForms,
   activateAdForm,
   activateFilterForm,
-  resetAdForm
+  resetAdForm,
+  FLAT,
+  BUNGALOW,
+  HOUSE,
+  PALACE,
+  HOTEL
 };

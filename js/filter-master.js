@@ -5,6 +5,17 @@ const DEBOUNCE_TIMEOUT_DELAY = 500; // 500 миллисекунд
 const filterContainer = document.querySelector('.map__filters');
 const featuresFilter = document.querySelector('#housing-features');
 
+const ANY_VALUE = 'any';
+const HOUSING_TYPE_FILTER = 'housing-type';
+const HOUSING_PRICE_FILTER = 'housing-price';
+const HOUSING_ROOMS_FILTER = 'housing-rooms';
+const HOUSING_GUESTS_FILTER = 'housing-guests';
+const LOW_PRICE = 'low';
+const MIDDLE_PRICE = 'middle';
+const HIGH_PRICE = 'high';
+const LOW_PRICE_LIMIT = 10000;
+const HIGH_PRICE_LEVEL = 50000;
+
 //Функция сброса фильтров в исходное состояние
 function resetFilters() {
   filterContainer.reset();
@@ -48,27 +59,27 @@ function setFilteringMenusChange(callback) {
     }
     for (let i = 0; i <= selectsValues.length - 1; i++) {
       const currentObjKey = Object.keys(selectsValues[i])[0];
-      if (selectsValues[i][currentObjKey] === 'any') {
+      if (selectsValues[i][currentObjKey] === ANY_VALUE) {
         continue;
       }
-      if (currentObjKey === 'housing-type') {
+      if (currentObjKey === HOUSING_TYPE_FILTER) {
         newoffers = newoffers.filter((res) => res.offer.type === selectsValues[i][currentObjKey]);
       }
-      if (currentObjKey === 'housing-price') {
-        if (selectsValues[i][currentObjKey] === 'middle') {
-          newoffers = newoffers.filter((res) => res.offer.price <= 50000 && res.offer.price >= 10000);
+      if (currentObjKey === HOUSING_PRICE_FILTER) {
+        if (selectsValues[i][currentObjKey] === MIDDLE_PRICE) {
+          newoffers = newoffers.filter((res) => res.offer.price <= HIGH_PRICE_LEVEL && res.offer.price >= LOW_PRICE_LIMIT);
         }
-        if (selectsValues[i][currentObjKey] === 'low') {
-          newoffers = newoffers.filter((res) => res.offer.price <= 10000);
+        if (selectsValues[i][currentObjKey] === LOW_PRICE) {
+          newoffers = newoffers.filter((res) => res.offer.price <= LOW_PRICE_LIMIT);
         }
-        if (selectsValues[i][currentObjKey] === 'high') {
-          newoffers = newoffers.filter((res) => res.offer.price >= 50000);
+        if (selectsValues[i][currentObjKey] === HIGH_PRICE) {
+          newoffers = newoffers.filter((res) => res.offer.price >= HIGH_PRICE_LEVEL);
         }
       }
-      if (currentObjKey === 'housing-rooms') {
+      if (currentObjKey === HOUSING_ROOMS_FILTER) {
         newoffers = newoffers.filter((res) => res.offer.rooms === Number(selectsValues[i][currentObjKey]));
       }
-      if (currentObjKey === 'housing-guests') {
+      if (currentObjKey === HOUSING_GUESTS_FILTER) {
         newoffers = newoffers.filter((res) => res.offer.guests === Number(selectsValues[i][currentObjKey]));
       }
     }
